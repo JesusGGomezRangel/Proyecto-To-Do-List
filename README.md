@@ -1,70 +1,146 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 📝 Aplicación Todo con React
 
-## Available Scripts
+## 📦 Descripción General
 
-In the project directory, you can run:
+Aplicación simple de tareas (*Todo App*) construida con **React** y animaciones de **Framer Motion**. Incluye tres componentes principales y un archivo de estilos centralizado en `App.css`.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🧱 Estructura del Proyecto
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+/src
+├── components
+│   ├── AddTodo.js
+│   ├── TodoList.js
+│   ├── TodoItem.js
+├── App.js
+├── App.css   ← Estilos principales
+├── index.js
+```
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ⚙️ Componentes
 
-### `npm run build`
+### 📥 AddTodo
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Formulario para agregar nuevas tareas.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```js
+<AddTodo onAdd={handleAdd} />
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Usa `useState` para controlar el campo de texto.
+- Llama a `onAdd(text)` y limpia el input tras agregar.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 📋 TodoList
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Muestra la lista de tareas usando `TodoItem`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```js
+<TodoList
+  todos={todos}
+  onToggle={handleToggle}
+  onDelete={handleDelete}
+/>
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+### ✅ TodoItem
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Muestra una tarea individual. Utiliza `framer-motion` para animaciones.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```js
+<TodoItem
+  todo={{ id: 1, text: 'Ejemplo', completed: false }}
+  onToggle={handleToggle}
+  onDelete={handleDelete}
+/>
+```
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🎨 Estilos (`App.css`)
 
-### Analyzing the Bundle Size
+Los estilos se encuentran en `App.css` y controlan el diseño completo de la aplicación:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```css
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0;
+  ...
+}
 
-### Making a Progressive Web App
+.app {
+  background: white;
+  padding: 20px;
+  ...
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+.add-todo input, .add-todo button {
+  padding: 10px;
+  ...
+}
 
-### Advanced Configuration
+.todo-item {
+  display: flex;
+  align-items: center;
+  ...
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Para modificar la apariencia, edita directamente este archivo.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🧪 Ejemplo completo en App.js
 
-### `npm run build` fails to minify
+```js
+import React, { useState } from 'react';
+import './App.css';
+import AddTodo from './components/AddTodo';
+import TodoList from './components/TodoList';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+let nextId = 1;
+
+function App() {
+  const [todos, setTodos] = useState([]);
+
+  const handleAdd = (text) => {
+    setTodos([...todos, { id: nextId++, text, completed: false }]);
+  };
+
+  const handleToggle = (id) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  const handleDelete = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
+
+  return (
+    <div className="app">
+      <h1>Lista de Tareas</h1>
+      <AddTodo onAdd={handleAdd} />
+      <TodoList todos={todos} onToggle={handleToggle} onDelete={handleDelete} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+---
+
+## 🔧 Recomendaciones
+
+- Usa PropTypes si deseas validar las props de tus componentes.
+- Puedes extender funcionalidades: filtros, edición, almacenamiento en localStorage, etc.
+- Considera agregar pruebas unitarias con `Jest` o `React Testing Library`.
